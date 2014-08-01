@@ -53,6 +53,7 @@ public class MyCoffeeMachine implements CoffeeMachine {
 
 	public void cancelWithoutIngredients(){
 		Coin[] reverse = Coin.reverse();
+
 		for (Coin r : reverse) {
 			for (Coin aux : coins) {
 				if (aux == r) {
@@ -75,7 +76,12 @@ public class MyCoffeeMachine implements CoffeeMachine {
 		else {
 
 			if(drink == drink.BLACK_SUGAR){
-				factory.getSugarDispenser().contains(200);
+				if(!factory.getSugarDispenser().contains(0.1)){
+					factory.getDisplay().warn("Out of Sugar");
+					factory.getCashBox().release(Coin.halfDollar);
+					factory.getDisplay().info("Insert coins and select a drink!");
+					return;
+				}
 			}
 
 			factory.getDisplay().info("Mixing ingredients.");
