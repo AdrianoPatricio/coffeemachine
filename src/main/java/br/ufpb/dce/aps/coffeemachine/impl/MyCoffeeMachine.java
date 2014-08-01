@@ -51,29 +51,15 @@ public class MyCoffeeMachine implements CoffeeMachine {
 		factory.getDisplay().info("Insert coins and select a drink!");
 	}
 
-	public void cancelWithoutIngredients(){
-		Coin[] reverse = Coin.reverse();
-
-		for (Coin r : reverse) {
-			for (Coin aux : coins) {
-				if (aux == r) {
-					factory.getCashBox().release(aux);		
-				}
-			}
-		}
-		coins.clear();
-		factory.getDisplay().info("Insert coins and select a drink!");
-	}
-
 	public void select(Drink drink) {
 		if(!factory.getCupDispenser().contains(1)){
-			factory.getDisplay().warn("Out of Cup");
-			factory.getCashBox().release(Coin.quarter);
-			factory.getCashBox().release(Coin.dime);
-			factory.getDisplay().info("Insert coins and select a drink!");
-			return;
+			 factory.getDisplay().warn("Out of Cup");
+			 factory.getCashBox().release(Coin.quarter);
+			 factory.getCashBox().release(Coin.dime);
+			 factory.getDisplay().info("Insert coins and select a drink!");
+			 return;
 		}
-
+		
 		if(!factory.getWaterDispenser().contains(0.1)){
 			factory.getDisplay().warn("Out of Water");
 			factory.getCashBox().release(Coin.quarter);
@@ -81,10 +67,12 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			factory.getDisplay().info("Insert coins and select a drink!");
 			return;
 		}
-
-		if(!this.factory.getCoffeePowderDispenser().contains(200)){
+		
+		if(!this.factory.getCoffeePowderDispenser().contains(0.1)){
 			factory.getDisplay().warn("Out of Coffee Powder");
-			cancelWithoutIngredients();
+			factory.getCashBox().release(Coin.quarter);
+			 factory.getCashBox().release(Coin.dime);
+			 factory.getDisplay().info("Insert coins and select a drink!");
 		} 
 
 		else {
@@ -97,13 +85,19 @@ public class MyCoffeeMachine implements CoffeeMachine {
 					return;
 				}
 			}
-
+			if(drink == this.drink.WHITE){
+				this.factory.getCreamerDispenser().contains(0.1);
+			}
+			
 			factory.getDisplay().info("Mixing ingredients.");
-			factory.getCoffeePowderDispenser().release(200);
+			factory.getCoffeePowderDispenser().release(0.1);
 			factory.getWaterDispenser().release(3);	
-
+			
 			if(drink == this.drink.BLACK_SUGAR){
-				factory.getSugarDispenser().release(200);
+				factory.getSugarDispenser().release(0.1);
+			}
+			if (drink == this.drink.WHITE){
+				this.factory.getCreamerDispenser().release(0.1);
 			}
 
 			factory.getDisplay().info("Releasing drink.");
