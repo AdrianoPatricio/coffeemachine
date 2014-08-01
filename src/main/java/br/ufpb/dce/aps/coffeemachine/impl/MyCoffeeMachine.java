@@ -66,8 +66,14 @@ public class MyCoffeeMachine implements CoffeeMachine {
 	}
 
 	public void select(Drink drink) {
-		factory.getCupDispenser().contains(1);
-		
+		if(!factory.getCupDispenser().contains(1)){
+			factory.getDisplay().warn("Out of Cup");
+			factory.getCashBox().release(Coin.quarter);
+			factory.getCashBox().release(Coin.dime);
+			factory.getDisplay().info("Insert coins and select a drink!");
+			return;
+		}
+
 		if(!factory.getWaterDispenser().contains(0.1)){
 			factory.getDisplay().warn("Out of Water");
 			factory.getCashBox().release(Coin.quarter);
@@ -75,7 +81,7 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			factory.getDisplay().info("Insert coins and select a drink!");
 			return;
 		}
-		
+
 		if(!this.factory.getCoffeePowderDispenser().contains(200)){
 			factory.getDisplay().warn("Out of Coffee Powder");
 			cancelWithoutIngredients();
