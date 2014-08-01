@@ -1,6 +1,6 @@
 package br.ufpb.dce.aps.coffeemachine;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 public class MockComponentsFactory implements ComponentsFactory {
 
