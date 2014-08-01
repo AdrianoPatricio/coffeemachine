@@ -93,6 +93,7 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			if(drink == Drink.BLACK_SUGAR){
 				factory.getSugarDispenser().release(0.1);
 			}
+			
 			if (drink == Drink.WHITE){
 				this.factory.getCreamerDispenser().release(0.1);
 			}
