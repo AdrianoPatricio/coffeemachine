@@ -18,11 +18,16 @@ public class MyCoffeeMachine implements CoffeeMachine {
 
 	public void insertCoin(Coin dime) {
 		if(dime==null){
-			throw new CoffeeMachineException("Invalid coin");
+			throw new CoffeeMachineException("Invalid coin!");
 		}
 		total += dime.getValue();
 		this.factory.getDisplay().info(
 				"Total: US$ " + this.total / 100 + "." + this.total % 100);
+	}
+
+	public void cancel() {
+		if(total==0)
+			throw new CoffeeMachineException("Without inserting coins!");
 	}
 
 }
