@@ -10,7 +10,10 @@ import br.ufpb.dce.aps.coffeemachine.Drink;
 
 public class MyCoffeeMachine implements CoffeeMachine {
 
-	private int total;
+
+	private Coin coin;
+	private Drink drink;
+	private int total, indice;
 	private ComponentsFactory factory;
 	private ArrayList<Coin> coins = new ArrayList<Coin>();
 
@@ -26,6 +29,7 @@ public class MyCoffeeMachine implements CoffeeMachine {
 		}
 		total += dime.getValue();
 		coins.add(dime);
+
 		factory.getDisplay().info(
 				"Total: US$ " + total / 100 + "." + total % 100);
 	}
@@ -50,13 +54,13 @@ public class MyCoffeeMachine implements CoffeeMachine {
 
 	public void select(Drink drink) {
 		if(!factory.getCupDispenser().contains(1)){
-			factory.getDisplay().warn("Out of Cup");
-			factory.getCashBox().release(Coin.quarter);
-			factory.getCashBox().release(Coin.dime);
-			factory.getDisplay().info("Insert coins and select a drink!");
-			return;
+			 factory.getDisplay().warn("Out of Cup");
+			 factory.getCashBox().release(Coin.quarter);
+			 factory.getCashBox().release(Coin.dime);
+			 factory.getDisplay().info("Insert coins and select a drink!");
+			 return;
 		}
-
+		
 		if(!factory.getWaterDispenser().contains(0.1)){
 			factory.getDisplay().warn("Out of Water");
 			factory.getCashBox().release(Coin.quarter);
@@ -64,17 +68,17 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			factory.getDisplay().info("Insert coins and select a drink!");
 			return;
 		}
-
+		
 		if(!this.factory.getCoffeePowderDispenser().contains(0.1)){
 			factory.getDisplay().warn("Out of Coffee Powder");
 			factory.getCashBox().release(Coin.quarter);
-			factory.getCashBox().release(Coin.dime);
-			factory.getDisplay().info("Insert coins and select a drink!");
-		} 
+			 factory.getCashBox().release(Coin.dime);
+			 factory.getDisplay().info("Insert coins and select a drink!");
+		}
 
 		else {
 
-			if(drink == Drink.BLACK_SUGAR){
+			if(drink == drink.BLACK_SUGAR){
 				if(!factory.getSugarDispenser().contains(0.1)){
 					factory.getDisplay().warn("Out of Sugar");
 					factory.getCashBox().release(Coin.halfDollar);
@@ -82,19 +86,19 @@ public class MyCoffeeMachine implements CoffeeMachine {
 					return;
 				}
 			}
-			if(drink == Drink.WHITE){
+
+			if(drink == this.drink.WHITE){
 				this.factory.getCreamerDispenser().contains(0.1);
 			}
-
+			
 			factory.getDisplay().info("Mixing ingredients.");
 			factory.getCoffeePowderDispenser().release(0.1);
 			factory.getWaterDispenser().release(3);	
-
-			if(drink == Drink.BLACK_SUGAR){
+			
+			if(drink == this.drink.BLACK_SUGAR){
 				factory.getSugarDispenser().release(0.1);
 			}
-			
-			if (drink == Drink.WHITE){
+			if (drink == this.drink.WHITE){
 				this.factory.getCreamerDispenser().release(0.1);
 			}
 
