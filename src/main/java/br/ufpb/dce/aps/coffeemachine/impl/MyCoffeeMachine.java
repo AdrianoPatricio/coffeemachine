@@ -29,25 +29,26 @@ public class MyCoffeeMachine implements CoffeeMachine {
 		total += dime.getValue();
 		coins.add(dime);
 		indice ++;
-		this.factory.getDisplay().info(
-				"Total: US$ " + this.total / 100 + "." + this.total % 100);
+		factory.getDisplay().info(
+				"Total: US$ " + total / 100 + "." + total % 100);
 	}
 
 	public void cancel() {
 		if(total==0)
 			throw new CoffeeMachineException("Without inserting coins!");
-		if (this.coins.size() > 0) {
+		if (coins.size() > 0) {
 			Coin[] reverse = Coin.reverse();
 			this.factory.getDisplay().warn("Cancelling drink. Please, get your coins.");
 			for (Coin r : reverse) {
-				for (Coin aux : this.coins) {
+				for (Coin aux : coins) {
 					if (aux == r) {
-						this.factory.getCashBox().release(aux);
+						factory.getCashBox().release(aux);
 					}
 				}
 			}
-			this.factory.getDisplay().info("Insert coins and select a drink!");
+			coins.clear();
 		}
+		factory.getDisplay().info("Insert coins and select a drink!");
 	}
 
 	public void select(Drink drink) {
@@ -73,5 +74,7 @@ public class MyCoffeeMachine implements CoffeeMachine {
 		
 		factory.getDisplay().info("Please, take your drink.");
 		factory.getDisplay().info("Insert coins and select a drink!");
+		
+		coins.clear();
 	}
 }
