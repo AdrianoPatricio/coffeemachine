@@ -16,7 +16,7 @@ public class MyCoffeeMachine implements CoffeeMachine {
 	}
 
 	public void insertCoin(Coin dime) {
-		total = dime.getValue();
+		total += dime.getValue();
 		this.factory.getDisplay().info(
 				"Total: US$ " + this.total / 100 + "." + this.total % 100);
 	}
