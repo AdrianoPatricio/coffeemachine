@@ -10,8 +10,9 @@ import br.ufpb.dce.aps.coffeemachine.Drink;
 
 public class MyCoffeeMachine implements CoffeeMachine {
 
-	private int total, indice;
 	private Coin coin;
+	private Drink drink;
+	private int total, indice;
 	private ComponentsFactory factory;
 	private ArrayList<Coin> coins = new ArrayList<Coin>();
 
@@ -53,11 +54,19 @@ public class MyCoffeeMachine implements CoffeeMachine {
 		factory.getCupDispenser().contains(1);
 		factory.getWaterDispenser().contains(3);	
 		factory.getCoffeePowderDispenser().contains(200);
+		
+		if(drink == drink.BLACK_SUGAR){
+			factory.getSugarDispenser().contains(200);
+		}
 		 
 		factory.getDisplay().info("Mixing ingredients.");
 		factory.getCoffeePowderDispenser().release(200);
 		factory.getWaterDispenser().release(3);	
-		 
+		
+		if(drink == this.drink.BLACK_SUGAR){
+			factory.getSugarDispenser().release(200);
+		}
+		
 		factory.getDisplay().info("Releasing drink.");
 		factory.getCupDispenser().release(1);
 		factory.getDrinkDispenser().release(1);
