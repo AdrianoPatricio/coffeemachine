@@ -1,6 +1,7 @@
 package br.ufpb.dce.aps.coffeemachine.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import br.ufpb.dce.aps.coffeemachine.CoffeeMachine;
 import br.ufpb.dce.aps.coffeemachine.CoffeeMachineException;
@@ -10,16 +11,16 @@ import br.ufpb.dce.aps.coffeemachine.Drink;
 
 public class MyCoffeeMachine implements CoffeeMachine {
 
-
-	private Coin coin;
-	private Drink drink;
-	private int total, indice;
+	private boolean temTroco;
 	private ComponentsFactory factory;
-	private ArrayList<Coin> coins = new ArrayList<Coin>();
+	private int total, cents, dolars, troco;
+	private List<Coin> coins;
 
 
 	public MyCoffeeMachine(ComponentsFactory factory) {
+		temTroco = false;
 		this.factory = factory;
+		coins = new ArrayList<Coin>();
 		factory.getDisplay().info("Insert coins and select a drink!");
 	}
 
@@ -29,9 +30,17 @@ public class MyCoffeeMachine implements CoffeeMachine {
 		}
 		total += dime.getValue();
 		coins.add(dime);
-
+		cents += dime.getValue() % 100;
+		dolars += dime.getValue() / 100; 
+		
 		factory.getDisplay().info(
 				"Total: US$ " + total / 100 + "." + total % 100);
+		
+		troco = (cents + dolars) - 35;
+		
+		if(troco>0){
+			temTroco = true;
+		}
 	}
 
 	public void cancel() {
@@ -52,15 +61,38 @@ public class MyCoffeeMachine implements CoffeeMachine {
 		factory.getDisplay().info("Insert coins and select a drink!");
 	}
 
+	private void planCoins(int troco){
+
+		Coin[] inverso = Coin.reverse();
+		for (Coin r : inverso) {
+			if(r.getValue() <= troco){
+				factory.getCashBox().count(r);
+				troco -= r.getValue();
+			}
+		}
+
+	}
+
+	private void releaseCoins(int troco){
+
+		Coin[] inverso = Coin.reverse();
+		for (Coin r : inverso) {
+			if(r.getValue() <= troco){
+				factory.getCashBox().release(r);
+				troco -= r.getValue(); 
+			}
+		}
+	}
+
 	public void select(Drink drink) {
 		if(!factory.getCupDispenser().contains(1)){
-			 factory.getDisplay().warn("Out of Cup");
-			 factory.getCashBox().release(Coin.quarter);
-			 factory.getCashBox().release(Coin.dime);
-			 factory.getDisplay().info("Insert coins and select a drink!");
-			 return;
+			factory.getDisplay().warn("Out of Cup");
+			factory.getCashBox().release(Coin.quarter);
+			factory.getCashBox().release(Coin.dime);
+			factory.getDisplay().info("Insert coins and select a drink!");
+			return;
 		}
-		
+
 		if(!factory.getWaterDispenser().contains(0.1)){
 			factory.getDisplay().warn("Out of Water");
 			factory.getCashBox().release(Coin.quarter);
@@ -68,17 +100,26 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			factory.getDisplay().info("Insert coins and select a drink!");
 			return;
 		}
-		
+
 		if(!this.factory.getCoffeePowderDispenser().contains(0.1)){
 			factory.getDisplay().warn("Out of Coffee Powder");
 			factory.getCashBox().release(Coin.quarter);
-			 factory.getCashBox().release(Coin.dime);
-			 factory.getDisplay().info("Insert coins and select a drink!");
+			factory.getCashBox().release(Coin.dime);
+			factory.getDisplay().info("Insert coins and select a drink!");
 		}
 
 		else {
+			if(drink == Drink.WHITE){
+				this.factory.getCreamerDispenser().contains(0.1);
+			}
 
-			if(drink == drink.BLACK_SUGAR){
+			if (drink == Drink.WHITE_SUGAR) {
+				factory.getCreamerDispenser().contains(0.1);
+				factory.getSugarDispenser().contains(0.1);
+
+			}
+
+			if(drink == Drink.BLACK_SUGAR){
 				if(!factory.getSugarDispenser().contains(0.1)){
 					factory.getDisplay().warn("Out of Sugar");
 					factory.getCashBox().release(Coin.halfDollar);
@@ -87,28 +128,38 @@ public class MyCoffeeMachine implements CoffeeMachine {
 				}
 			}
 
-			if(drink == this.drink.WHITE){
-				this.factory.getCreamerDispenser().contains(0.1);
+			if(temTroco){
+				planCoins(troco);
 			}
-			
+
 			factory.getDisplay().info("Mixing ingredients.");
 			factory.getCoffeePowderDispenser().release(0.1);
 			factory.getWaterDispenser().release(3);	
-			
-			if(drink == this.drink.BLACK_SUGAR){
+
+			if (drink == Drink.WHITE){
+				this.factory.getCreamerDispenser().release(0.1);
+			}
+
+			if (drink == Drink.WHITE_SUGAR) {
+				factory.getCreamerDispenser().release(0.1);
 				factory.getSugarDispenser().release(0.1);
 			}
-			if (drink == this.drink.WHITE){
-				this.factory.getCreamerDispenser().release(0.1);
+
+			if(drink == Drink.BLACK_SUGAR){
+				factory.getSugarDispenser().release(0.1);
 			}
 
 			factory.getDisplay().info("Releasing drink.");
 			factory.getCupDispenser().release(1);
-			factory.getDrinkDispenser().release(1);
+			factory.getDrinkDispenser().release(0.1);
 
 			factory.getDisplay().info("Please, take your drink.");
-			factory.getDisplay().info("Insert coins and select a drink!");
 
+			if(temTroco){
+				releaseCoins(troco);
+			}
+
+			factory.getDisplay().info("Insert coins and select a drink!");
 			coins.clear();
 		}
 	}
