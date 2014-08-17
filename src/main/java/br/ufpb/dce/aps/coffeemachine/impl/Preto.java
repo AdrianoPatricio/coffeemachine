@@ -16,7 +16,7 @@ public class Preto extends Bebidas {
 
 	public void release() {
 		if (drink == Drink.BLACK_SUGAR) {
-			this.factory.getSugarDispenser().release(super.anyDouble);
+			this.factory.getSugarDispenser().release(5);
 		}
 	}
 }

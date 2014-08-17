@@ -43,7 +43,7 @@ public class GerenciadorDeBebidas {
 	
 	public boolean verificaAcucar(ComponentsFactory factory){
 		if(bebida.getDrink() == Drink.BLACK_SUGAR || bebida.getDrink() == Drink.WHITE_SUGAR){
-			if (!factory.getSugarDispenser().contains(anyDouble())) {
+			if (!factory.getSugarDispenser().contains(5)) {
 				factory.getDisplay().warn(Messages.OUT_OF_SUGAR);
 				return false;
 			}
