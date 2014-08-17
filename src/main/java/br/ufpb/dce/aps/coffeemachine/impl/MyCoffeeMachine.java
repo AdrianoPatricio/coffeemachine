@@ -12,8 +12,6 @@ import br.ufpb.dce.aps.coffeemachine.Messages;
 public class MyCoffeeMachine implements CoffeeMachine {
 
 	private int total;
-	private int inteiro = 0;
-	private int centavos = 0;
 	private ComponentsFactory factory;
 	private ArrayList<Coin> spartacus = new ArrayList<Coin>();
 	private GerenciadorDeBebidas gerenteBebidas;
@@ -21,17 +19,15 @@ public class MyCoffeeMachine implements CoffeeMachine {
 
 	public MyCoffeeMachine(ComponentsFactory factory) {
 		this.factory = factory;
-		this.gerenteBebidas = new GerenciadorDeBebidas(this.factory);
-		this.factory.getDisplay().info(Messages.INSERT_COINS);
+		gerenteBebidas = new GerenciadorDeBebidas(this.factory);
+		factory.getDisplay().info(Messages.INSERT_COINS);
 	}
 
 	public void insertCoin(Coin dime) throws CoffeeMachineException {
 		try {
-			spartacus.add(dime);
 			total += dime.getValue();
-			inteiro = total / 100;
-			centavos = total % 100;
-			factory.getDisplay().info("Total: US$ " + inteiro + "." + centavos);
+			spartacus.add(dime);
+			factory.getDisplay().info("Total: US$ " + this.total / 100 + "." + this.total % 100);
 		} catch (NullPointerException e) {
 			throw new CoffeeMachineException("moeda invalida");
 		}
@@ -39,9 +35,10 @@ public class MyCoffeeMachine implements CoffeeMachine {
 
 	public void cancel() throws CoffeeMachineException {
 		if (this.total == 0) {
- 			throw new CoffeeMachineException("sem moedas inseridas");
- 		}
-		cancel(true);
+			throw new CoffeeMachineException("sem moedas inseridas");
+		}
+		this.cancel(true);
+		
 	}
 		
 	public void cancel(Boolean confirm) throws CoffeeMachineException{
@@ -56,60 +53,63 @@ public class MyCoffeeMachine implements CoffeeMachine {
 					}
 				}
 			}
-			total = 0;
-			spartacus.clear();
+			this.total = 0;
+			this.spartacus.clear();
 		}
-		factory.getDisplay().info(Messages.INSERT_COINS);
+		this.factory.getDisplay().info(Messages.INSERT_COINS);
 	}
 	
-	public void calculaTroco (double troco){
-		double aux = troco;
-		for(Coin re : reverso){
-			while(re.getValue() <= aux ){
-				factory.getCashBox().count (re);
-				aux -= re.getValue(); 
+	public boolean calculaTroco (double troco){
+		for(Coin re : this.reverso){
+			if(re.getValue() <= troco && this.factory.getCashBox().count (re) > 0){
+					troco -= re.getValue();
 			}
-		}
+		}		
+		return (troco == 0);
 	}
 	
-	public void liberaTroco (double troco){
-		for(Coin re : reverso){
+	public void liberarTroco (double troco){
+		for(Coin re : this.reverso){
 			while(re.getValue() <= troco ){
-				factory.getCashBox().release (re);
+				this.factory.getCashBox().release (re);
 				troco -= re.getValue(); 
 			}
 		}
 	}
 	
 	public void select(Drink drink) {
+		
+		if(this.total < this.gerenteBebidas.getValor() || this.total == 0){
+			this.factory.getDisplay().warn(Messages.NO_ENOUGHT_MONEY);
+			this.cancel(false);
+			return;
+		}
 
-		if(total < gerenteBebidas.getValor() || total == 0){
-			factory.getDisplay().warn(Messages.NO_ENOUGHT_MONEY);
-			cancel(false);
+		this.gerenteBebidas.iniciarBebida(drink);
+		
+		if (!this.gerenteBebidas.conferirIngredientes()) {
+			this.cancel(false);
 			return;
 		}
-		
-		gerenteBebidas.iniciarBebida(drink);
-		
-		if (!gerenteBebidas.conferirIngredientes()) {
-			cancel(false);
-			return;
-		}
-		if(!gerenteBebidas.verificaAcucar()){ 
-			cancel(false);
+		if(!this.gerenteBebidas.verificaAcucar()){ 
+			this.cancel(false);
 			return;
 		} 
-		if(total % gerenteBebidas.getValor() != 0 && total > gerenteBebidas.getValor()){
-			calculaTroco(total - gerenteBebidas.getValor());
+		if(this.total % this.gerenteBebidas.getValor() != 0 && this.total > this.gerenteBebidas.getValor()){
+			if(!this.calculaTroco(this.total - this.gerenteBebidas.getValor())){
+				this.factory.getDisplay().warn(Messages.NO_ENOUGHT_CHANGE);
+				this.cancel(false);
+				return;
+			}
 		}
 				
-		gerenteBebidas.misturarIngredientes();
-		gerenteBebidas.release();
+		this.gerenteBebidas.misturarIngredientes();
+		this.gerenteBebidas.release();
 		
-		if(total % gerenteBebidas.getValor() != 0 && total > gerenteBebidas.getValor()){
-			liberaTroco(total - gerenteBebidas.getValor());
+		if(this.total % this.gerenteBebidas.getValor() != 0 && this.total > this.gerenteBebidas.getValor()){
+			this.liberarTroco(this.total - this.gerenteBebidas.getValor());
 		}
-		factory.getDisplay().info(Messages.INSERT_COINS);
-		spartacus.clear();
+		this.factory.getDisplay().info(Messages.INSERT_COINS);
+		this.spartacus.clear();
 	}
 }
