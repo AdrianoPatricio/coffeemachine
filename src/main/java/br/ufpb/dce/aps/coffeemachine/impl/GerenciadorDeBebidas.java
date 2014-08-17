@@ -24,11 +24,11 @@ public class GerenciadorDeBebidas {
 			factory.getDisplay().warn(Messages.OUT_OF_CUP);
 			return false;
 		}
-		else if (!factory.getWaterDispenser().contains(anyDouble())) {
+		else if (!factory.getWaterDispenser().contains(100)) {
 			factory.getDisplay().warn(Messages.OUT_OF_WATER);
 			return false;
 		}
-		else if (!factory.getCoffeePowderDispenser().contains(anyDouble())) {
+		else if (!factory.getCoffeePowderDispenser().contains(15)) {
 			factory.getDisplay().warn(Messages.OUT_OF_COFFEE_POWDER);
 			return false;
 		}
@@ -53,15 +53,15 @@ public class GerenciadorDeBebidas {
 	
 	public void misturarIngredientes (ComponentsFactory factory){
 		factory.getDisplay().info(Messages.MIXING);
-		factory.getCoffeePowderDispenser().release(anyDouble());
-		factory.getWaterDispenser().release(anyDouble());
+		factory.getCoffeePowderDispenser().release(15);
+		factory.getWaterDispenser().release(100);
 	}
 	
 	public void release(ComponentsFactory factory){
 		bebida.release();
 		factory.getDisplay().info(Messages.RELEASING);
 		factory.getCupDispenser().release(1);
-		factory.getDrinkDispenser().release(1);
+		factory.getDrinkDispenser().release(100.0);
 		factory.getDisplay().info(Messages.TAKE_DRINK);
 		
 	}	
