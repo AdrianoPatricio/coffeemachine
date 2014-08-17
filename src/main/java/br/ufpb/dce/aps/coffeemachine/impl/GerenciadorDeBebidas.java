@@ -7,24 +7,19 @@ import br.ufpb.dce.aps.coffeemachine.Messages;
 
 public class GerenciadorDeBebidas {
 	
-	private ComponentsFactory factory;
 	private Bebidas bebida;
 	private double valor = 35;
 	
-	public GerenciadorDeBebidas(ComponentsFactory factory){
-		this.factory = factory;
-	}
-	
-	public void iniciarBebida(Drink drink){
+	public void iniciarBebida(Drink drink, ComponentsFactory factory){
 		if (drink == Drink.BLACK ||drink == Drink.BLACK_SUGAR){
-			bebida = new Preto (drink, this.factory);
+			bebida = new Preto (drink, factory);
 		}
 		else{
-			bebida =  new Branco (drink, this.factory);
+			bebida =  new Branco (drink, factory);
 		}
 	}
 	
-	public boolean conferirIngredientes() {
+	public boolean conferirIngredientes(ComponentsFactory factory) {
 		if (!factory.getCupDispenser().contains(1)) {
 			factory.getDisplay().warn(Messages.OUT_OF_CUP);
 			return false;
@@ -45,23 +40,23 @@ public class GerenciadorDeBebidas {
 			return true;
 	}
 	
-	public boolean verificaAcucar(){
+	public boolean verificaAcucar(ComponentsFactory factory){
 		if(bebida.getDrink() == Drink.BLACK_SUGAR || bebida.getDrink() == Drink.WHITE_SUGAR){
-			if (!this.factory.getSugarDispenser().contains(anyDouble())) {
-				this.factory.getDisplay().warn(Messages.OUT_OF_SUGAR);
+			if (!factory.getSugarDispenser().contains(anyDouble())) {
+				factory.getDisplay().warn(Messages.OUT_OF_SUGAR);
 				return false;
 			}
 		}		
 		return true;
 	}	
 	
-	public void misturarIngredientes (){
+	public void misturarIngredientes (ComponentsFactory factory){
 		factory.getDisplay().info(Messages.MIXING);
 		factory.getCoffeePowderDispenser().release(anyDouble());
 		factory.getWaterDispenser().release(anyDouble());
 	}
 	
-	public void release(){
+	public void release(ComponentsFactory factory){
 		bebida.release();
 		factory.getDisplay().info(Messages.RELEASING);
 		factory.getCupDispenser().release(1);
