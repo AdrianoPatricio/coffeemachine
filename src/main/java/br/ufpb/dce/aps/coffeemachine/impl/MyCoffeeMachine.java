@@ -48,7 +48,7 @@ public class MyCoffeeMachine implements CoffeeMachine {
 			throw new CoffeeMachineException("Without inserting coins!");
 		if (coins.size() > 0) {
 			Coin[] reverse = Coin.reverse();
-			this.factory.getDisplay().warn("Cancelling drink. Please, get your coins.");
+			factory.getDisplay().warn("Cancelling drink. Please, get your coins.");
 			for (Coin r : reverse) {
 				for (Coin aux : coins) {
 					if (aux == r) {
@@ -85,6 +85,7 @@ public class MyCoffeeMachine implements CoffeeMachine {
 	}
 
 	public void select(Drink drink) {
+		
 		if(!factory.getCupDispenser().contains(1)){
 			factory.getDisplay().warn("Out of Cup");
 			factory.getCashBox().release(Coin.quarter);
