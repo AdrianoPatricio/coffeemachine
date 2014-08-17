@@ -16,7 +16,7 @@ public void iniciarPedido(ComponentsFactory factory, GerenciadorDeCaixa gerencia
 		
 		gerenteDeBebidas.iniciarBebida(drink,factory);
 
-		if (!gerenteDeBebidas.conferirIngredientes(factory)) {
+		if (!gerenteDeBebidas.conferirIngredientes(drink, factory)) {
 			gerenciadorDeCaixa.liberarMoedas(factory, false);
 			return;
 		}

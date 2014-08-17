@@ -15,7 +15,8 @@ public class Branco extends Bebidas {
 	}
 
 	public void release() {
-		factory.getCreamerDispenser().release(super.anyDouble);
+		factory.getWaterDispenser().release(80);
+		factory.getCreamerDispenser().release(20);
 		if (drink == Drink.WHITE_SUGAR) {
 			factory.getSugarDispenser().release(super.anyDouble);
 		}
