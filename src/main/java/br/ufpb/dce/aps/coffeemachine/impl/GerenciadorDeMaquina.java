@@ -38,7 +38,7 @@ public void iniciarPedido(ComponentsFactory factory, GerenciadorDeCaixa gerencia
 		
 		factory.getDisplay().info(Messages.INSERT_COINS);
 		
-		gerenciadorDeCaixa.zerarMoedas();
+		gerenciadorDeCaixa.liberarMoedas();
 	}
 
 }
