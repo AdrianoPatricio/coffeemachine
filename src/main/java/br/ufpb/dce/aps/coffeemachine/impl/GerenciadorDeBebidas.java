@@ -89,6 +89,7 @@ public class GerenciadorDeBebidas {
 		}
 		if (bouillon > 0) {
 			if (!factory.getBouillonDispenser().contains(bouillon)) {
+				factory.getDisplay().warn(Messages.OUT_OF_BOUILLON_POWDER);
 				return false;
 			}
 		}
