@@ -8,10 +8,10 @@ public class GerenciadorDeMaquina {
 
 	private GerenciadorDeBebidas gerenciadorDeBebidas = new GerenciadorDeBebidas();
 
-	public void iniciarPedido(ComponentsFactory factory,
-			GerenciadorDeCaixa gerenciadorDeCaixa, Drink drink) {
+	public void iniciarPedido(ComponentsFactory factory, GerenciadorDeCaixa gerenciadorDeCaixa, Drink drink) {
 
 		this.gerenciadorDeBebidas.iniciarBebida(factory, drink);
+		
 		if (!gerenciadorDeCaixa.conferirDinheiro(factory,
 				gerenciadorDeBebidas.getValor())) {
 			return;
@@ -34,16 +34,15 @@ public class GerenciadorDeMaquina {
 		gerenciadorDeBebidas.misturarIngredientes(factory, drink);
 		gerenciadorDeBebidas.release(factory);
 
-		if (gerenciadorDeCaixa.getTotal() % gerenciadorDeBebidas.getValor() != 0 && gerenciadorDeCaixa.getTotal() > this.gerenciadorDeBebidas.getValor()) {
-			gerenciadorDeCaixa.liberarTroco(factory, gerenciadorDeBebidas.getValor());
-		}
+		if (gerenciadorDeCaixa.getTotal() >= gerenciadorDeBebidas.getValor()) {
+			gerenciadorDeCaixa.liberarTroco(factory, gerenciadorDeBebidas.getValor());}
 
 		factory.getDisplay().info(Messages.INSERT_COINS);
 		gerenciadorDeCaixa.limparMoedas();
 	}
 	
-	public void apresentarMensagemInicial(ComponentsFactory factory){
+	/*public void apresentarMensagemInicial(ComponentsFactory factory){
 		factory.getDisplay().info(Messages.INSERT_COINS);
-	}
+	}*/
 
 }
