@@ -8,71 +8,90 @@ public class GerenciadorDeBebidas {
 
 	private Bebidas bebida;
 	private double valor = 35;
+	private double valorCaldo = 25;
 
-	public void iniciarBebida(Drink drink, ComponentsFactory factory){
-		if (drink == Drink.BLACK ||drink == Drink.BLACK_SUGAR){
-			bebida = new Preto (drink, factory);
-		}
-		else{
-			bebida =  new Branco (drink, factory);
+	public void iniciarBebida(ComponentsFactory factory, Drink drink) {
+		if (drink == Drink.BLACK || drink == Drink.BLACK_SUGAR) {
+			bebida = new Preto(drink);
+		} else if (drink == Drink.WHITE || drink == Drink.WHITE_SUGAR) {
+			bebida = new Branco(drink);
+		} else {
+			bebida = new Bouillon(drink);
+			valor = valorCaldo;
 		}
 	}
 
-	public boolean conferirIngredientes(Drink drink, ComponentsFactory factory) {
-		if (!factory.getCupDispenser().contains(1)) {
-			factory.getDisplay().warn(Messages.OUT_OF_CUP);
-			return false;
+	public boolean conferirIngredientes(ComponentsFactory factory, Drink drink) {
+		if (bebida.getDrink() == Drink.BLACK || bebida.getDrink() == Drink.BLACK_SUGAR) {
+			return (conferirIngredientes(factory, drink, 1, 100, 15, 0, 0));
+
+		} else if (bebida.getDrink() == Drink.WHITE || bebida.getDrink() == Drink.WHITE_SUGAR) {
+			return (conferirIngredientes(factory, drink, 1, 80, 15, 20, 0));
+		} else {
+			return (conferirIngredientes(factory, drink, 1, 100, 0, 0, 10));
 		}
-		if(drink == Drink.BLACK || drink == Drink.BLACK_SUGAR){
-			if (!factory.getWaterDispenser().contains(100)) {
-				factory.getDisplay().warn(Messages.OUT_OF_WATER);
-				return false;
-			}
-		}
-		else{
-			if(!factory.getWaterDispenser().contains(80)) {
-				factory.getDisplay().warn(Messages.OUT_OF_WATER);
-				return false;
-			}
-		}
-		if (!factory.getCoffeePowderDispenser().contains(15)) {
-			factory.getDisplay().warn(Messages.OUT_OF_COFFEE_POWDER);
-			return false;
-		}
-		else if (bebida.getDrink() == Drink.WHITE || bebida.getDrink() == Drink.WHITE_SUGAR){
-			if (!factory.getCreamerDispenser().contains(20)){
-				factory.getDisplay().warn(Messages.OUT_OF_CREAMER);
-				return false;
-			}
-		}
-		return true;
 	}
 
-	public boolean verificaAcucar(ComponentsFactory factory){
-		if(bebida.getDrink() == Drink.BLACK_SUGAR || bebida.getDrink() == Drink.WHITE_SUGAR){
+	public boolean verificaAcucar(ComponentsFactory factory) {
+
+		if (bebida.getDrink() == Drink.BLACK_SUGAR || bebida.getDrink() == Drink.WHITE_SUGAR) {
 			if (!factory.getSugarDispenser().contains(5)) {
 				factory.getDisplay().warn(Messages.OUT_OF_SUGAR);
 				return false;
 			}
-		}		
+		}
 		return true;
-	}	
-
-	public void misturarIngredientes (ComponentsFactory factory){
-		factory.getDisplay().info(Messages.MIXING);
-		factory.getCoffeePowderDispenser().release(15);
 	}
 
-	public void release(ComponentsFactory factory){
-		bebida.release();
-		factory.getDisplay().info(Messages.RELEASING);
-		factory.getCupDispenser().release(1);
+	public void misturarIngredientes(ComponentsFactory factory, Drink drink) {
+		factory.getDisplay().info(Messages.MIXING);
+		if (bebida.getDrink() == Drink.BOUILLON) {
+			factory.getBouillonDispenser().release(10);
+		} 
+		else {
+			factory.getCoffeePowderDispenser().release(15);
+		}
+	}
+
+	public void release(ComponentsFactory factory) {
+		bebida.release(factory);
 		factory.getDrinkDispenser().release(100.0);
 		factory.getDisplay().info(Messages.TAKE_DRINK);
 
-	}	
+	}
 
-	public double getValor(){
+	public double getValor() {
 		return this.valor;
+	}
+
+	public boolean conferirIngredientes(ComponentsFactory factory, Drink drink, int cup, int water, int powder, int cream, int bouillon) {
+		if (cup > 0) {
+			if (!factory.getCupDispenser().contains(cup)) {
+				factory.getDisplay().warn(Messages.OUT_OF_CUP);
+				return false;
+			}
+		}
+		if (!factory.getWaterDispenser().contains(water)) {
+			factory.getDisplay().warn(Messages.OUT_OF_WATER);
+			return false;
+		}
+		if (powder > 0) {
+			if (!factory.getCoffeePowderDispenser().contains(powder)) {
+				factory.getDisplay().warn(Messages.OUT_OF_COFFEE_POWDER);
+				return false;
+			}
+		}
+		if (bebida.getDrink() == Drink.WHITE || bebida.getDrink() == Drink.WHITE_SUGAR) {
+			if (!factory.getCreamerDispenser().contains(cream)) {
+				factory.getDisplay().warn(Messages.OUT_OF_CREAMER);
+				return false;
+			}
+		}
+		if (bouillon > 0) {
+			if (!factory.getBouillonDispenser().contains(bouillon)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

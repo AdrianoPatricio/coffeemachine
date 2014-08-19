@@ -2,11 +2,11 @@ package br.ufpb.dce.aps.coffeemachine.impl;
 
 import br.ufpb.dce.aps.coffeemachine.ComponentsFactory;
 import br.ufpb.dce.aps.coffeemachine.Drink;
+import br.ufpb.dce.aps.coffeemachine.Messages;
 
 public class Branco extends Bebidas {
 
-	public Branco(Drink drink, ComponentsFactory factory) {
-		this.factory = factory;
+	public Branco(Drink drink) {
 		if (drink == Drink.WHITE) {
 			this.drink = Drink.WHITE;
 		} else {
@@ -14,11 +14,15 @@ public class Branco extends Bebidas {
 		}
 	}
 
-	public void release() {
+	public void release(ComponentsFactory factory) {
 		factory.getWaterDispenser().release(80);
 		factory.getCreamerDispenser().release(20);
-		if (drink == Drink.WHITE_SUGAR) {
+		if (this.drink == Drink.WHITE_SUGAR) {
 			factory.getSugarDispenser().release(5);
 		}
+		factory.getDisplay().info(Messages.RELEASING);
+		factory.getCupDispenser().release(1);
 	}
+	
+	
 }

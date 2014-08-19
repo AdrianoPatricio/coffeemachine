@@ -4,21 +4,15 @@ import br.ufpb.dce.aps.coffeemachine.ComponentsFactory;
 import br.ufpb.dce.aps.coffeemachine.Drink;
 import br.ufpb.dce.aps.coffeemachine.Messages;
 
-public class Preto extends Bebidas {
-
-	public Preto (Drink drink) {
-		if (drink == Drink.BLACK) {
-			this.drink = Drink.BLACK;
-		} else {
-			this.drink = Drink.BLACK_SUGAR;
-		}
+public class Bouillon extends Bebidas {
+	
+	public Bouillon (Drink drink) {
+		this.drink = Drink.BOUILLON;
 	}
 
+	@Override
 	public void release(ComponentsFactory factory) {
 		factory.getWaterDispenser().release(100);
-		if (drink == Drink.BLACK_SUGAR) {
-			factory.getSugarDispenser().release(5);
-		}
 		factory.getDisplay().info(Messages.RELEASING);
 		factory.getCupDispenser().release(1);
 	}

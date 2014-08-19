@@ -21,7 +21,7 @@ public class MyCoffeeMachine implements CoffeeMachine {
 	}
 
 	public void insertCoin(Coin dime) {
-		gerenciadorDeCaixa.inserirMoeda(factory, dime);
+		gerenciadorDeCaixa.inserirMoedas(factory, dime);
 	}
 
 	public void cancel() throws CoffeeMachineException {
