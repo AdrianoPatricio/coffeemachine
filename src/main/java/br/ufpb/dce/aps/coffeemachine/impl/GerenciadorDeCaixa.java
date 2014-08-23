@@ -11,20 +11,26 @@ public class GerenciadorDeCaixa {
 
 	private Coin[] reverso = Coin.reverse();
 	private int total, inteiro, centavos;
-
+	private String modo = "";
 	private ArrayList<Coin> spartacus = new ArrayList<Coin>();
 	private ArrayList<Coin> trocos = new ArrayList<Coin>();
 
-	public void inserirMoedas(ComponentsFactory factory, Coin coin)
-			throws CoffeeMachineException {
-		try {
-			total += coin.getValue();
-			spartacus.add(coin);
-			inteiro = total/100;
-			centavos = total%100;
-			factory.getDisplay().info("Total: US$ " + inteiro + "." + centavos);
-		} catch (NullPointerException e) {
-			throw new CoffeeMachineException("moeda invalida");
+	public void inserirMoedas(ComponentsFactory factory, Coin coin) throws CoffeeMachineException {
+		if(this.modo.equals("cracha")){
+			factory.getDisplay().warn(Messages.CAN_NOT_INSERT_COINS);
+			liberarMoedasCracha(factory, coin);
+			return;
+		}
+		else{
+			try {
+				total += coin.getValue();
+				spartacus.add(coin);
+				inteiro = total/100;
+				centavos = total%100;
+				factory.getDisplay().info("Total: US$ " + inteiro + "." + centavos);
+			} catch (NullPointerException e) {
+				throw new CoffeeMachineException("Moeda inválida");
+			}
 		}
 	}
 
@@ -51,6 +57,10 @@ public class GerenciadorDeCaixa {
 		total = 0;
 		limparMoedas();
 		factory.getDisplay().info(Messages.INSERT_COINS);
+	}
+	
+	private void liberarMoedasCracha(ComponentsFactory factory, Coin coin) {
+		factory.getCashBox().release(coin);
 	}
 
 	public boolean calculaTroco(ComponentsFactory factory, double valorBebida) {
@@ -102,5 +112,9 @@ public class GerenciadorDeCaixa {
 
 	public int getTotal() {
 		return total;
+	}
+	
+	public void setModo(String modo) {
+		this.modo = modo;
 	}
 }
