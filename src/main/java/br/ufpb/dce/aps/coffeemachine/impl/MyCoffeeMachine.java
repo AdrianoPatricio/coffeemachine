@@ -13,13 +13,6 @@ public class MyCoffeeMachine implements CoffeeMachine {
 	private GerenciadorDeCaixa gerenciadorDeCaixa;
 	private GerenciadorDeMaquina gerenciadorDeMaquina;
 
-	public MyCoffeeMachine(ComponentsFactory factory) {
-		this.factory = factory;
-		gerenciadorDeCaixa = new GerenciadorDeCaixa();
-		gerenciadorDeMaquina = new GerenciadorDeMaquina();
-		factory.getDisplay().info(Messages.INSERT_COINS);
-	}
-
 	public void insertCoin(Coin dime) {
 		gerenciadorDeCaixa.inserirMoedas(factory, dime);
 	}
@@ -31,5 +24,16 @@ public class MyCoffeeMachine implements CoffeeMachine {
 		
 	public void select(Drink drink) {
 		gerenciadorDeMaquina.iniciarPedido(factory, gerenciadorDeCaixa, drink);
+	}
+
+	public void setFactory(ComponentsFactory factory) {
+		this.factory = factory;
+		gerenciadorDeCaixa = new GerenciadorDeCaixa();
+		gerenciadorDeMaquina = new GerenciadorDeMaquina();
+		factory.getDisplay().info(Messages.INSERT_COINS);
+	}
+
+	public void readBadge(int badgeCode) {
+		factory.getDisplay().info(Messages.BADGE_READ);
 	}
 }
