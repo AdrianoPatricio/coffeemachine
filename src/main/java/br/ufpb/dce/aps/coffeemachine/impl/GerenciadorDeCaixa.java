@@ -11,12 +11,12 @@ public class GerenciadorDeCaixa {
 
 	private Coin[] reverso = Coin.reverse();
 	private int total, inteiro, centavos;
-	private String modo = "";
+	
 	private ArrayList<Coin> spartacus = new ArrayList<Coin>();
 	private ArrayList<Coin> trocos = new ArrayList<Coin>();
 
-	public void inserirMoedas(ComponentsFactory factory, Coin coin) throws CoffeeMachineException {
-		if(this.modo.equals("cracha")){
+	public void inserirMoedas(ComponentsFactory factory, Coin coin, String modo) throws CoffeeMachineException {
+		if(modo.equals("cracha")){
 			factory.getDisplay().warn(Messages.CAN_NOT_INSERT_COINS);
 			liberarMoedasCracha(factory, coin);
 			return;
@@ -39,11 +39,11 @@ public class GerenciadorDeCaixa {
 		if (total == 0) {
 			throw new CoffeeMachineException("sem moedas inseridas");
 		}
-		liberaMoedas(factory, true);
+		liberarMoedas(factory, true);
 
 	}
 
-	public void liberaMoedas(ComponentsFactory factory, Boolean troco) {
+	public void liberarMoedas(ComponentsFactory factory, Boolean troco) {
 		if (troco) {
 			factory.getDisplay().warn(Messages.CANCEL);
 		}
@@ -56,6 +56,7 @@ public class GerenciadorDeCaixa {
 		}
 		total = 0;
 		limparMoedas();
+		GerenciadorDeMaquina.setModo (" ");
 		factory.getDisplay().info(Messages.INSERT_COINS);
 	}
 	
@@ -90,7 +91,7 @@ public class GerenciadorDeCaixa {
 	public boolean conferirDinheiro(ComponentsFactory factory,double valorBebida) {
 		if (total < valorBebida || total == 0) {
 			factory.getDisplay().warn(Messages.NO_ENOUGHT_MONEY);
-			liberaMoedas(factory, false);
+			liberarMoedas(factory, false);
 			return false;
 		}
 		return true;
@@ -99,7 +100,7 @@ public class GerenciadorDeCaixa {
 	public boolean verificarTroco(ComponentsFactory factory, double valorDaBebida) {
 		if (!calculaTroco(factory, valorDaBebida)) {
 			factory.getDisplay().warn(Messages.NO_ENOUGHT_CHANGE);
-			liberaMoedas(factory, false);
+			liberarMoedas(factory, false);
 			return false;
 		}
 		return true;
@@ -112,9 +113,5 @@ public class GerenciadorDeCaixa {
 
 	public int getTotal() {
 		return total;
-	}
-	
-	public void setModo(String modo) {
-		this.modo = modo;
 	}
 }
