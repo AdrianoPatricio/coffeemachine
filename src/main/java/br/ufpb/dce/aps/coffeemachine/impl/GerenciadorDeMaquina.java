@@ -8,62 +8,88 @@ public class GerenciadorDeMaquina {
 
 	private GerenciadorDeBebidas gerenteDeBebidas = new GerenciadorDeBebidas();
 	private static String modo = "";
-	
-	public void iniciarPedidoDeBebida(ComponentsFactory factory, GerenciadorDeCaixa gerenteDeCaixa, Drink drink) {
-		gerenteDeBebidas.iniciarBebida(factory, drink);
+	private int cracha = 0;
+
+	public void iniciarPedido(ComponentsFactory factory, GerenciadorDeCaixa gerenteFinanceiro, Drink drink) {
+		if (modo.equals("cracha")){
+			iniciarPedidoComCracha(factory, drink);
+		}else{
+			iniciarPedidoComMoedas(factory, gerenteFinanceiro, drink);
+		}
+	}
+
+	public void iniciarPedidoComMoedas(ComponentsFactory factory, GerenciadorDeCaixa gerenteFinanceiro, Drink drink){
 		
-		if (!gerenteDeCaixa.conferirDinheiro(factory, gerenteDeBebidas.getValor())) {
+		gerenteDeBebidas.iniciarBebida(factory, drink);
+		if (!gerenteFinanceiro.conferirDinheiro(factory, gerenteDeBebidas.getValor())) {
 			return;
 		}
 
 		if (!gerenteDeBebidas.conferirIngredientes(factory, drink)) {
-			gerenteDeCaixa.liberarMoedas(factory, false);
+			gerenteFinanceiro.liberarMoedas(factory, false);
 			return;
 		}
-		if (!gerenteDeBebidas.verificaAcucar(factory)) {
-			gerenteDeCaixa.liberarMoedas(factory, false);
+		if (!this.gerenteDeBebidas.verificaAcucar(factory)) {
+			gerenteFinanceiro.liberarMoedas(factory, false);
 			return;
 		}
 
-		if (!gerenteDeCaixa.verificarTroco(factory,gerenteDeBebidas.getValor())) {
+		if (!gerenteFinanceiro.verificarTroco(factory, gerenteDeBebidas.getValor())) {
 			return;
 		}
-	
 
 		gerenteDeBebidas.misturarIngredientes(factory, drink);
 		gerenteDeBebidas.release(factory);
 
-		if (gerenteDeCaixa.getTotal() >= gerenteDeBebidas.getValor()) {
-			gerenteDeCaixa.liberarTroco(factory, gerenteDeBebidas.getValor());
+		if (gerenteFinanceiro.getTotal() >= gerenteDeBebidas.getValor()) {
+			gerenteFinanceiro.liberarTroco(factory, gerenteDeBebidas.getValor());
 		}
 
 		factory.getDisplay().info(Messages.INSERT_COINS);
-		GerenciadorDeMaquina.setModo (" ");
-		gerenteDeCaixa.limparMoedas();
+		GerenciadorDeMaquina.setModo ("");
+		gerenteFinanceiro.limparMoedas();
+	}
+
+	public void iniciarPedidoComCracha(ComponentsFactory factory, Drink drink){
 		
+		gerenteDeBebidas.iniciarBebida(factory, drink);
+
+		if (!gerenteDeBebidas.conferirIngredientes(factory, drink)) {
+			return;
+		}
+		if (!gerenteDeBebidas.verificaAcucar(factory)) {
+			return;
+		}
+		factory.getPayrollSystem().debit(gerenteDeBebidas.getValor(), cracha);
+
+		this.gerenteDeBebidas.misturarIngredientes(factory, drink);
+		this.gerenteDeBebidas.release(factory);
+
+		factory.getDisplay().info(Messages.INSERT_COINS);
+		GerenciadorDeMaquina.setModo (" ");
 	}
 
 	public void iniciarComMoedas(ComponentsFactory factory) {
-			factory.getDisplay().info(Messages.INSERT_COINS);
-			GerenciadorDeMaquina.setModo("moedas");
+		factory.getDisplay().info(Messages.INSERT_COINS);
+		GerenciadorDeMaquina.setModo("moedas");
 	}
-	
-	public void iniciarComCracha(ComponentsFactory factory, GerenciadorDeCaixa gerenteDeCaixa, int cracha) {
-		if(gerenteDeCaixa.getTotal()>0){
+
+	public void iniciarComCracha(ComponentsFactory factory, GerenciadorDeCaixa gerenteAuxiliar, int cracha) {
+		if(gerenteAuxiliar.getTotal()>0){
 			factory.getDisplay().warn(Messages.CAN_NOT_READ_BADGE);
 			return;
 		}
 		else{
 			factory.getDisplay().info(Messages.BADGE_READ);
+			this.cracha = cracha;
 			GerenciadorDeMaquina.setModo("cracha");
 		}
 	}
-		
-	
+
 	public static void setModo(String novoModo) {
 		modo = novoModo;
 	}
-	
+
 	public String getModo(){
 		return modo;
 	}

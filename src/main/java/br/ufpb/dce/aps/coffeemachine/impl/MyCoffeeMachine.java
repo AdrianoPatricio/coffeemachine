@@ -20,7 +20,7 @@ public class MyCoffeeMachine implements CoffeeMachine {
 	}
 	
 	public void select(Drink drink) {		
-		gerenteDeMaquina.iniciarPedidoDeBebida(factory, gerenteDeCaixa, drink);
+		gerenteDeMaquina.iniciarPedido(factory, gerenteDeCaixa, drink);
 	}
 
 	public void setFactory(ComponentsFactory factory) {
