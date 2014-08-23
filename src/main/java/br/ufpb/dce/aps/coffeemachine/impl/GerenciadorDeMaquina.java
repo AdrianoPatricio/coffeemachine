@@ -75,6 +75,7 @@ public class GerenciadorDeMaquina {
 	}
 
 	public void iniciarComCracha(ComponentsFactory factory, GerenciadorDeCaixa gerenteAuxiliar, int cracha) {
+		
 		if(gerenteAuxiliar.getTotal()>0){
 			factory.getDisplay().warn(Messages.CAN_NOT_READ_BADGE);
 			return;
